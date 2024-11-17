@@ -1,0 +1,136 @@
+﻿
+<div class="top-left">
+   @*  <input type="text" class="form-control d-inline-block w-auto" placeholder="Search Item" data-bind="value: $root.searchTerm, valueUpdate: 'afterkeydown'" />
+    <button class="btn btn-secondary mx-3" data-bind="click:$root.clickedSearch">Search</button> *@
+    <div>
+        <input type="text" placeholder="Search..." data-bind="value: searchQuery, valueUpdate: 'input'" />
+        <select data-bind="value: selectedTransactionType">
+            <option value="">All</option>
+            <option value="0">Purchase</option>
+            <option value="1">Sale</option>
+            <!-- Add more options as per your enum values -->
+        </select>
+        <button data-bind="click: search">Search</button>
+        <button data-bind="click: generateReport">Generate Report</button>
+    </div>
+
+</div>
+<table class="table table-striped mt-4">
+    <thead>
+        <tr>
+            <th>S.N</th>
+            <th>Item Name</th>
+            <th>Quantity </th>
+            <th>Transaction Date</th>
+            <th>Stock CheckOut</th>
+            <th>Transaction Type</th>
+        </tr>
+    </thead>
+    <tbody data-bind="foreach:pagedItems">
+        <tr>
+            <td data-bind="text: $index() + 1"></td>
+            <td data-bind="text:itemName"></td>
+            <td data-bind="text:quantity"></td>
+            <td data-bind="text:transDate"></td>
+            <td data-bind="text:stockCheckOut"></td>
+            <td data-bind="text:transactionType"></td>
+        </tr>
+    </tbody>
+</table>
+<!-- Pagination controls -->
+<nav aria-label="Page navigation">
+    <ul class="pagination justify-content-center">
+        <li class="page-item" data-bind="css: { disabled: currentPage() === 1 }">
+            <a class="page-link" href="#" data-bind="click: previousPage">&laquo; Previous</a>
+        </li>
+        <!-- ko foreach: ko.utils.range(1, totalPages()) -->
+        <li class="page-item" data-bind="css: { active: $data === $parent.currentPage() }">
+            <a class="page-link" href="#" data-bind="text: $data, click: function() { $parent.goToPage($data) }"></a>
+        </li>
+        <!-- /ko -->
+        <li class="page-item" data-bind="css: { disabled: currentPage() === totalPages() }">
+            <a class="page-link" href="#" data-bind="click: nextPage">Next &raquo;</a>
+        </li>
+    </ul>
+</nav>
+
+@section Scripts {
+    <script src="~/js/knockout.js"></script>
+    <script src="~/js/itemshistory/itemhistory.model.js"></script>
+    <script src="~/js/itemshistory/itemhistory.controller.js"></script>
+    <script>
+        {
+            var obj = new itemhistorycontroller();
+            ko.applyBindings(obj);
+        }
+    </script>
+}
+
+
+@* <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search UI</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .top-right {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="top-right">
+                    <input type="text" class="form-control d-inline-block w-auto" placeholder="Search Item" data-bind="value: $root.searchTerm, valueUpdate: 'afterkeydown'" />
+                    <button class="btn btn-secondary mx-3" data-bind="click:$root.clickedSearch">Search</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-12">
+                <table class="table table-striped mt-4">
+                    <thead>
+                        <tr>
+                            <th>S.N</th>
+                            <th>Item Name</th>
+                            <th>Quantity </th>
+                            <th>Transaction Date</th>
+                            <th>Stock CheckOut</th>
+                            <th>Transaction Type</th>
+                        </tr>
+                    </thead>
+                    <tbody data-bind="foreach:ItemHistoryList">
+                        <tr>
+                            <td data-bind="text: $index() + 1"></td>
+                            <td data-bind="text:itemName"></td>
+                            <td data-bind="text:quantity"></td>
+                            <td data-bind="text:transDate"></td>
+                            <td data-bind="text:stockCheckOut"></td>
+                            <td data-bind="text:transactionType"></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                @section Scripts
+                {
+                    <script src="~/js/knockout.js"></script>
+                    <script src="~/js/itemshistory/itemhistorycontroller.js"></script>
+                    <script src="~/js/itemshistory/itemhistorymodel.js"></script>
+                    <script>
+                        {
+                            var obj = new itemhistorycontroller();
+                            ko.applyBindings(obj);
+                        }
+                    </script>
+                }
+
+</body>
+</html> *@

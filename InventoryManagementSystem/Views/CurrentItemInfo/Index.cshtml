@@ -1,0 +1,30 @@
+﻿
+<table class="table table-striped mt-4">
+    <thead>
+        <tr>
+            <th>S.N</th>
+            <th>Item Name</th>
+            <th>Quantity</th>
+        </tr>
+    </thead>
+    <tbody data-bind="foreach:CurrentItemList">
+        <tr>
+            <td data-bind="text: $index() + 1"></td>
+            <td data-bind="text:itemName"></td>
+            <td data-bind="text:quantity"></td>
+
+        </tr>
+    </tbody>
+</table>
+
+@section Scripts {
+    <script src="~/js/knockout.js"></script>
+    <script src="~/js/currentiteminfo/currentiteminfo.model.js"></script>
+    <script src="~/js/currentiteminfo/currentiteminfo.controller.js"></script>
+    <script>
+        {
+            var obj = new currentitemcontroller();
+            ko.applyBindings(obj);
+        }
+    </script>
+}

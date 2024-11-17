@@ -1,0 +1,116 @@
+﻿<div class="container mt-4">
+    <h2>Order Management System</h2>
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#itemModal">
+        Create New item
+    </button>
+
+    <div class="modal fade" id="itemModal" tabindex="-1" aria-labelledby="itemModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="itemModalLabel">
+                        <span data-bind="ifnot: IsUpdated">Create New item</span>
+                        <span data-bind="if: IsUpdated">Update item</span>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" data-bind="click: CloseModel"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="row" data-bind="with: IsUpdated() ? SelectedItem : NewItem">
+                            <div class="col-md-4 form-group">
+                                <label>Name:</label>
+                                <input type="text" class="form-control" data-bind="value: Name" />
+                            </div>
+                            <div class="col-md-4 form-group">
+                                <label>Unit:</label>
+                                <input type="text" class="form-control" data-bind="value: Unit">
+                            </div>
+                            <div class="col-md-4 form-group">
+                                <label>Category:</label>
+                                <input type="text" class="form-control" data-bind="value: Category">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-primary" data-bind="click: AddItem">
+                        <span data-bind="ifnot: IsUpdated">Create</span>
+                        <span data-bind="if: IsUpdated">Update</span>
+                    </button>
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <table class="table table-striped mt-4">
+        <thead>
+            <tr>
+                <th>S.N</th>
+                <th>Full Name</th>
+                <th>Contact Number</th>
+                <th>Address</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody data-bind="foreach: pagedItems">
+            <tr>
+                <td data-bind="text: $index() + 1"></td>
+                <td data-bind="text: Name"></td>
+                <td data-bind="text: Unit"></td>
+                <td data-bind="text: Category"></td>
+                <td>
+                    <button class="btn btn-sm btn-dark" data-bind="click: $root.SelectItem" data-bs-toggle="modal" data-bs-target="#itemModal">Edit</button>
+                    <button data-bind="click: $root.DeleteItem" class="btn btn-sm btn-danger">Delete</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <!-- Pagination controls -->
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" data-bind="css: { disabled: currentPage() === 1 }">
+                <a class="page-link" href="#" data-bind="click: previousPage">&laquo; Previous</a>
+            </li>
+            <!-- ko foreach: ko.utils.range(1, totalPages()) -->
+            <li class="page-item" data-bind="css: { active: $data === $parent.currentPage() }">
+                <a class="page-link" href="#" data-bind="text: $data, click: function() { $parent.goToPage($data) }"></a>
+            </li>
+            <!-- /ko -->
+            <li class="page-item" data-bind="css: { disabled: currentPage() === totalPages() }">
+                <a class="page-link" href="#" data-bind="click: nextPage">Next &raquo;</a>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteConfirmModalLabel">Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete the customer <span data-bind="text: itemToDelete() ? itemToDelete().Name() : ''"></span>?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button data-bind="click: confirmDelete" class="btn btn-sm btn-danger">Delete</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+    <script src="~/js/knockout.js"></script>
+    <script src="~/js/items/item.controller.js"></script>
+    <script src="~/js/items/item.model.js"></script>
+    <script>
+        var obj = new ItemController();
+        ko.applyBindings(obj);
+    </script>
+}

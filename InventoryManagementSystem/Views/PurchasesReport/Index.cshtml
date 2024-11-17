@@ -1,0 +1,164 @@
+﻿<div class="container mt-4">
+    <h2>Purchase</h2>
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#orderModal">
+        Create Purchase Order
+    </button>
+
+    <div class="modal fade" id="orderModal" tabindex="-1" aria-labelledby="orderModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="orderModalLabel">
+                       
+                         <span data-bind="ifnot: IsUpdated">Create New Purchase</span> 
+                         <span data-bind="if: IsUpdated">Update Purchase</span> 
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" data-bind="click: CloseModel"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="row" data-bind="with: IsUpdated() ? SelectedPurchase : NewPurchase">
+                            
+                            <div class="col-md-4 form-group">
+                                <label>Vendor Name:</label>
+                                <select type="text" class="form-control"
+                                        data-bind="options: $root.VendorNameList,
+                                            optionsText: 'VendorName',
+                                            optionsValue: 'Id',
+                                            value: VendorId,
+                                            optionsCaption: 'Choose Vendor'">
+                                </select>
+                                <div class="text-danger" data-bind="validationMessage: ItemId"></div>
+                            </div>
+                            <div class="col-md-4 form-group">
+                                <label>Invoice Number</label>
+                                <input type="text" class="form-control" data-bind="value: InvoiceNumber" >
+                            </div>
+                            <div class="col-md-4 form-group">
+                                <label>BillAmount:</label>
+                                <input type="text" class="form-control" readonly data-bind="value: BillAmount, valueUpdate : 'input'" *@>
+                            </div>
+                            <div class="col-md-4 form-group">
+                                <label>Discount(%):</label>
+                                <input type="number" step="0.01" class="form-control" data-bind="value:Discount, valueUpdate:'input'">
+                            </div>
+                            <div class="col-md-4 form-group">
+                                <label>NetAmount:</label>
+                                <input type="text" class="form-control" readonly data-bind="value:NetAmount,  valueUpdate:'input'">
+                            </div>
+                        </div>
+                        <h4>Order Items</h4>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Item Name</th>
+                                    <th>Unit</th>
+                                    <th>Quantity</th>
+                                    <th>Amount</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody data-bind="foreach:IsUpdated() ? SelectedPurchase().Purchases : NewPurchase().Purchases">
+                                <tr>
+                                    <td>
+                                        <select class="form-control" name="Item Name"
+                                                data-bind="options: $root.ItemsNameList,
+                                                optionsText: 'ItemName',
+                                                optionsValue: 'Id',
+                                                value:ItemId,
+                                                optionsCaption: 'Choose Item'">
+                                        </select>
+
+                                    </td>
+                                    <td><input type="text" class="form-control" readonly data-bind="value: Unit" ></td>
+                                    <td><input type="number" class="form-control" data-bind="value: Quantity, valueUpdate : 'input' @*,event:{change: $root.calculateTotal} *@"></td>
+                                    <td><input type="number" step="0.01" class="form-control" data-bind="value: Amount,  valueUpdate : 'input' "  /></td>
+                                    <td>
+                                        <button class="btn btn-danger btn-sm" data-bind="click: $root.RemoveItem" >
+                                            <i class="fa-solid fa-trash-can"></i>Remove
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="row mb-3">
+                            <div class="col-md-12 text-end">
+                                <button class="btn btn-success"  data-bind="click: $root.AddItem" >
+                                    <i class="fa-solid fa-plus"></i>Add Item
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-primary" data-bind="click: AddPurchase">
+                        <span  data-bind="ifnot: IsUpdated" >Create</span>
+                        <span  data-bind="if: IsUpdated" >Update</span>
+                    </button>
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <table class="table table-striped mt-4">
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                
+                <th>Vendor Name</th>
+                <th>Invoice Number</th>
+                <th>Bill Amount</th>
+                <th>Discount(%)</th>
+                <th>Net Amount</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody data-bind="foreach:CurrentPurchase()" >
+            <tr>
+                <td data-bind="text:$index() + 1"</td>
+               
+                <td data-bind="text:VendorName"></td>
+                <td data-bind="text:InvoiceNumber" ></td>
+                <td data-bind="text:BillAmount"></td>
+                <td data-bind="text:NetAmount"></td>
+                <td data-bind="text:Discount" ></td>
+                <td>
+                    <button class="btn btn-sm btn-dark" data-bind="click: $root.SelectPurchase"  data-bs-toggle="modal" data-bs-target="#orderModal">Edit</button>
+                    <button data-bind="click:$root.DeletePurchase" class="btn btn-sm btn-danger">Delete</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteConfirmModalLabel">Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete the purchase from vendor : <span data-bind="text: PurchaseToBeDelete() ? PurchaseToBeDelete().VendorName() : ''"></span>?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button data-bind="click: confirmDelete" class="btn btn-sm btn-danger">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/knockout.js"></script>
+    <script src="~/js/purchasesreport/purchases.model.js"></script>
+    <script src="~/js/purchasesreport/purchase.controller.js"></script>
+    <script>
+        {
+            var obj = new PurchasesController();
+            ko.applyBindings(obj);
+        }
+    </script>
+}
