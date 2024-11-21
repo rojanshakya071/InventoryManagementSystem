@@ -32,8 +32,8 @@ var PurchaseDetailsVM = function (item, parent) {
     self.Id = ko.observable(item.id || 0);
     self.ItemId = ko.observable(item.itemId || 0);
     self.Unit = ko.observable(item.unit || '');
-    self.Quantity = ko.observable(item.quantity || 0);
-    self.Amount = ko.observable(item.amount || '');
+    self.Quantity = ko.observable(Number(item.quantity) || 0);
+    self.Amount = ko.observable(item.amount || 0);
     self.Price = ko.computed(function () {
         return self.Quantity() * self.Amount();
     });

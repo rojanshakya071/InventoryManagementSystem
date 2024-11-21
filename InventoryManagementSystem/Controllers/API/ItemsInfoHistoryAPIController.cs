@@ -26,23 +26,20 @@ namespace InventoryManagementSystem.Controllers.API
         [HttpGet]
         public async Task<List<ItemsHistoryVM>> GetItemsHistory(string search = "", TransactionType? transactionType = null)
         {
-            var items = await _context.Items.ToListAsync();
-            var itemsHistory = await _context.ItemsHistoryInfo.ToListAsync();
+            search = search.ToLower();
+            var itemsHistory = await _context.ItemsHistoryInfo.Include(x=>x.Item).Where(x=>x.Item.Name.ToLower().Contains(search) && ((transactionType!=null)?x.TransactionType == transactionType:true)).ToListAsync();
 
-            var result = (from i in items
-                          join h in itemsHistory on i.Id equals h.ItemId
-                          where (string.IsNullOrEmpty(search) || i.Name.Contains(search)) &&
-                                (!transactionType.HasValue || h.TransactionType == transactionType)
-                          select new ItemsHistoryVM
+            var result = itemsHistory.GroupBy(x => new { x.TransDate.Date, x.TransactionType,x.Item }).Select(x=> new ItemsHistoryVM
                           {
-                              Id = h.Id,
-                              ItemId = h.ItemId,
-                              ItemName = i.Name,
-                              Quantity = h.Quantity,
-                              StockCheckOut = h.StockCheckOut,
-                              TransactionType = h.TransactionType,
-                              TransDate = h.TransDate
-                          }).ToList();
+                              Id = x.FirstOrDefault().Id,
+                              ItemId = x.Key.Item.Id,
+                              ItemName = x.Key.Item.Name,
+                              Quantity = x.Key.TransactionType == TransactionType.Purchase? x.Where(x=>x.StockCheckOut == StockCheckOut.In).Sum(x=>x.Quantity) - x.Where(x => x.StockCheckOut == StockCheckOut.Out).Sum(x => x.Quantity) :
+                              x.Where(x => x.StockCheckOut == StockCheckOut.Out).Sum(x => x.Quantity) - x.Where(x => x.StockCheckOut == StockCheckOut.In).Sum(x => x.Quantity),
+                              StockCheckOut = x.Key.TransactionType == TransactionType.Purchase?StockCheckOut.In: StockCheckOut.Out,
+                              TransactionType = x.Key.TransactionType,
+                              TransDate = x.Key.Date
+                          }).OrderBy(x=>x.TransDate).ToList();
 
             return result;
         }
@@ -50,23 +47,22 @@ namespace InventoryManagementSystem.Controllers.API
         [HttpGet("GenerateReport")]
         public IActionResult GenerateReport(string search = "", TransactionType? transactionType = null)
         {
-            var items = _context.Items.ToList();
-            var itemsHistory = _context.ItemsHistoryInfo.ToList();
+            search = search.ToLower();
+            var itemsHistory = _context.ItemsHistoryInfo.Include(x => x.Item).Where(x => x.Item.Name.ToLower().Contains(search) && ((transactionType != null) ? x.TransactionType == transactionType : true)).ToList();
 
-            var result = (from i in items
-                          join h in itemsHistory on i.Id equals h.ItemId
-                          where (string.IsNullOrEmpty(search) || i.Name.Contains(search)) &&
-                                (!transactionType.HasValue || h.TransactionType == transactionType)
-                          select new ItemsHistoryVM
-                          {
-                              Id = h.Id,
-                              ItemId = h.ItemId,
-                              ItemName = i.Name,
-                              Quantity = h.Quantity,
-                              StockCheckOut = h.StockCheckOut,
-                              TransactionType = h.TransactionType,
-                              TransDate = h.TransDate
-                          }).ToList();
+            var result = itemsHistory.GroupBy(x => new { x.TransDate.Date, x.TransactionType, x.Item }).Select(x => new ItemsHistoryVM
+            {
+                Id = x.FirstOrDefault().Id,
+                ItemId = x.Key.Item.Id,
+                ItemName = x.Key.Item.Name,
+                Quantity = x.Key.TransactionType == TransactionType.Purchase ? x.Where(x => x.StockCheckOut == StockCheckOut.In).Sum(x => x.Quantity) - x.Where(x => x.StockCheckOut == StockCheckOut.Out).Sum(x => x.Quantity) :
+                              x.Where(x => x.StockCheckOut == StockCheckOut.Out).Sum(x => x.Quantity) - x.Where(x => x.StockCheckOut == StockCheckOut.In).Sum(x => x.Quantity),
+                StockCheckOut = x.Key.TransactionType == TransactionType.Purchase ? StockCheckOut.In : StockCheckOut.Out,
+                TransactionType = x.Key.TransactionType,
+                TransDate = x.Key.Date
+            }).OrderBy(x => x.TransDate).ToList();
+
+
 
             using (var workbook = new XLWorkbook())
             {

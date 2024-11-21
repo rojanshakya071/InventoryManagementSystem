@@ -20,14 +20,14 @@
                                     <h5 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">Sign into your account</h5>
 
                                     <div data-mdb-input-init class="form-outline mb-4">
-                                        <input asp-for="Email" id="form2Example17" class="form-control form-control-lg" />
                                         <label asp-for="Email" class="form-label" for="form2Example17">Email address</label>
+                                        <input asp-for="Email" id="form2Example17" class="form-control form-control-lg" />
                                         <span asp-validation-for="Email" class="text-danger"></span>
                                     </div>
 
                                     <div data-mdb-input-init class="form-outline mb-4">
-                                        <input asp-for="Password" id="form2Example27" class="form-control form-control-lg" />
                                         <label asp-for="Password" class="form-label" for="form2Example27">Password</label>
+                                        <input asp-for="Password" id="form2Example27" class="form-control form-control-lg" />
                                         <span asp-validation-for="Password" class="text-danger"> @ViewData["Login Error "]</span>
                                     </div>
 

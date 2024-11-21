@@ -50,7 +50,7 @@ namespace InventoryManagementSystem.Controllers
             if (user != null)
             {
                 IdentityUtils.AddingClaimIdentity(model, user.Roles ?? "employee", HttpContext);
-                return Redirect("/");
+                return Redirect("/Home");
             }
             else
                 ModelState.AddModelError("Password", "Invalid Username or Password");
