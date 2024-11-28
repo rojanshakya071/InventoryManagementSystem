@@ -37,7 +37,6 @@ namespace InventoryManagementSystem.Services
                           select new SalesMasterVM
                           {
                               Id = m.Id,
-                              SalesDate = m.SalesDate,
                               CustomerId = m.CustomerId,
                               CustomerName = customer.FullName,
                               InvoiceNumber = m.InvoiceNumber,
@@ -74,7 +73,6 @@ namespace InventoryManagementSystem.Services
                 var data = new SalesMasterVM()
                 {
                     Id = masterData.Id,
-                    SalesDate = masterData.SalesDate,
                     CustomerId = masterData.CustomerId,
                     InvoiceNumber = masterData.InvoiceNumber,
                     BillAmount = masterData.BillAmount,
@@ -144,7 +142,7 @@ namespace InventoryManagementSystem.Services
                 var masterData = new SalesMasterModel()
                 {
                     Id = 0,
-                    SalesDate = salesReport.SalesDate,
+                    SalesDate = DateTime.Now,
                     CustomerId = salesReport.CustomerId,
                     InvoiceNumber = salesReport.InvoiceNumber,
                     BillAmount = salesReport.BillAmount,
@@ -212,10 +210,9 @@ namespace InventoryManagementSystem.Services
                     var masterData = await _context.SalesMaster.FindAsync(salesReport.Id);
                     if (masterData == null)
                     {
-                        return new OkObjectResult(new { Success = false, Message = $"sales data is null" });
+                        return new OkObjectResult(new { Success = false, Message = $"Sales data is null" });
                     }
 
-                    masterData.SalesDate = salesReport.SalesDate;
                     masterData.CustomerId = salesReport.CustomerId;
                     masterData.InvoiceNumber = salesReport.InvoiceNumber;
                     masterData.Discount = salesReport.Discount;
@@ -235,7 +232,7 @@ namespace InventoryManagementSystem.Services
                             }
                             else
                             {
-                                return new OkObjectResult(new { Success = false, Message = "There stock of such item" });
+                                return new OkObjectResult(new { Success = false, Message = "There is no stock of such item" });
                             }
 
                             var currentHistory = new ItemCurrentInfoHistory()
@@ -301,7 +298,7 @@ namespace InventoryManagementSystem.Services
                     await _context.SaveChangesAsync();
                     await transaction.CommitAsync();
 
-                     return new OkObjectResult(new { Success = false, Message = "sales Add Successfully" });
+                     return new OkObjectResult(new { Success = false, Message = "Sales Add Successfully" });
                 }
                 catch (Exception ex)
                 {

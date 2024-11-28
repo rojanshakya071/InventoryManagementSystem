@@ -1,7 +1,7 @@
 ﻿<div class="container mt-4">
     <h2>Sales </h2>
     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#orderModal">
-        Create Sales Order
+        Create Sales
     </button>
 
     <div class="modal fade" id="orderModal" tabindex="-1" aria-labelledby="orderModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
@@ -17,10 +17,7 @@
                 <div class="modal-body">
                     <form>
                         <div class="row" data-bind="with: IsUpdated() ? SelectedOrder : NewOrder">
-                            <div class="col-md-4 form-group">
-                                <label>Date:</label>
-                                <input type="datetime-local" class="form-control" data-bind="value: SalesDate">
-                            </div>
+                          
                             <div class="col-md-4 form-group">
                                 <label>Customer Name:</label>
                                 <select type="text" class="form-control" data-bind="options:$root.CustomersNameList,
@@ -110,7 +107,6 @@
         <thead>
             <tr>
                 <th>Order ID</th>
-                <th>Date</th>
                 <th>Customer Name</th>
                 <th>Invoice Number</th>
                 <th>Bill Amount</th>
@@ -122,7 +118,6 @@
         <tbody data-bind="foreach:CurrentOrder()">
             <tr>
                 <td data-bind="text:$index() +1"></td>
-                <td data-bind="text:SalesDate"></td>
                 <td data-bind="text:CustomerName"></td>
                 <td data-bind="text:InvoiceNumber"></td>
                 <td data-bind="text:BillAmount"></td>

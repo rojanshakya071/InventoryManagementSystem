@@ -6,7 +6,6 @@ var SalesMasterVM = function (item, parent) {
     item = item || {};
     self.Id = ko.observable(item.id || 0);
     self.CustomerId = ko.observable(item.customerId || '');
-    self.SalesDate = ko.observable(item.salesDate || '');
     self.CustomerName = ko.observable(item.customerName || '');
     self.InvoiceNumber = ko.observable(item.invoiceNumber || 0);
     self.Discount = ko.observable(item.discount || 0);

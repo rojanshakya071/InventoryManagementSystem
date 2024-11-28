@@ -90,7 +90,7 @@ namespace InventoryManagementSystem.Controllers
                     Roles = "Employee",
                     ConfirmPassword = model.ConfirmPassword,
                 };
-
+                _userService.RegisterUser(model);
 
                 return RedirectToAction("Index");
             }

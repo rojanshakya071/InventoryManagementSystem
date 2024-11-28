@@ -129,7 +129,7 @@ var PurchasesController = function () {
                                 self.ResetForm();
                                 self.GetData();
                                 $('#orderModal').modal('hide');
-                                Swal.fire("Item Added Successfully");
+                                Swal.fire("Purchase Added Successfully");
                             }
                             else {
                                 alert(result.message);

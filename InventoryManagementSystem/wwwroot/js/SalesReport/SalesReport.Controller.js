@@ -45,11 +45,7 @@ var SalesReportController = function () {
         var isvalid = true;
         var order = self.IsUpdated() ? self.SelectedOrder : self.NewOrder;
         console.log(ko.toJS(order));
-        if (order().SalesDate() == '') {
-            toastr.error("Please select Date");
-            isvalid = false;
-            return;
-        }
+       
         if (!order().CustomerId() ) {
             toastr.error("Please select Customer ");
             isvalid = false;
@@ -115,7 +111,7 @@ var SalesReportController = function () {
                                 self.resetForm();
                                 self.getData();
                                 $('#orderModal').modal('hide');
-                                Swal.fire("Item Added Successfully");
+                                Swal.fire("Sales Added Successfully");
                             }
                             else {
                                 toastr.error(result.message)
